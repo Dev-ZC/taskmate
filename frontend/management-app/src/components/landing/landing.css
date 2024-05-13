@@ -1,0 +1,50 @@
+.initial-container {
+    align-items: center;
+    text-align: center;
+    margin: 10rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.initial-container div{
+    align-items: center;
+}
+
+.initial-container h1{
+    font-size: 3rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.initial-smalltext{
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.initial-smalltext p{
+    width: 25rem;
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 2rem;
+}
+
+.initial-container a{
+    text-decoration: none;
+    font-weight: 500;
+    color: black;
+    padding: 1rem;
+    margin-top: 2rem;
+    margin: 1rem;
+    border: 3px black solid;
+    background-color: none;
+    border-radius: 10px;
+    transition: linear 200ms;
+    box-shadow: 0.5rem 0.5rem black;
+}
+
+.initial-container a:hover{
+    color: gray;
+    box-shadow: none;
+}
+
+

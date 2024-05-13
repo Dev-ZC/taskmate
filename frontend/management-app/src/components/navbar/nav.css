@@ -1,0 +1,44 @@
+.nav {
+    background-color: none;
+    color: black;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+.title{
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.nav a {
+    color: inherit;
+    text-decoration: none;
+    padding: 1.5rem;
+}
+
+.nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 3rem;
+}
+
+.nav a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.list-container a{
+    border-bottom: none;
+    transition: linear 200ms;
+}
+
+.list-container a:hover{
+    border-bottom: 3px black solid;
+}
+
