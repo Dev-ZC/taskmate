@@ -2,7 +2,7 @@
     align-items: center;
     text-align: center;
     margin: 10rem;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .initial-container div{
@@ -10,7 +10,7 @@
 }
 
 .initial-container h1{
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: 600;
     margin: 0;
 }
@@ -40,12 +40,13 @@
     background-color: none;
     border-radius: 10px;
     transition: linear 200ms;
-    box-shadow: 0.5rem 0.5rem black;
+    box-shadow: 0.2rem 0.2rem black;
 }
 
 .initial-container a:hover{
-    color: gray;
-    box-shadow: none;
+    /*color: black;
+    box-shadow: none;*/
+    background-color: lightcyan;
 }
 
 

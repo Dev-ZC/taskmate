@@ -16,7 +16,7 @@ function Landing() {
                     </p>
                 </div>
                 <a href="/">
-                    Get Taskmate for Free
+                    Use Taskmate for Free
                 </a>
             </div>
         </div>

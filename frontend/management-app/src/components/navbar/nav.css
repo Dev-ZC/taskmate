@@ -1,7 +1,7 @@
 .nav {
     background-color: none;
     color: black;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -34,7 +34,26 @@
     padding: 1.5rem;
 }
 
-.list-container a:hover{
+/*
+.nav .list-container li.active > a{
+    border-bottom: 3px black solid;
+}*/
+
+.list-container .list-link:hover{
     border-bottom: 3px black solid;
 }
 
+.list-container .get-started{
+    padding: 0.5rem;
+    border: 1.5px black solid;
+    background-color: none;
+    border-radius: 10px;
+    transition: linear 100ms;
+    box-shadow: 0.15rem 0.15rem black;
+}
+
+.list-container .get-started:hover{
+    /*box-shadow: 0rem 0rem none;
+    border-bottom: 0.5px black solid;*/
+    background-color: lightpink;
+}
