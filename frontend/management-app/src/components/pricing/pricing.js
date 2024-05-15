@@ -1,7 +1,9 @@
 import '../../App.css'
 import './pricing.css'
 
-function Pricing() {
+export default function Pricing() {
+
+
     return(
         <div className="initial-container">
             <div>
@@ -13,4 +15,8 @@ function Pricing() {
     );
 }
 
-export default Pricing;
+function PricingCard() {
+    <div className="pricing-card">
+        
+    </div>
+}

@@ -11,7 +11,7 @@
 
 .title{
     font-size: 2rem;
-    font-weight: 600;
+    font-weight: 580;
     margin: 1.5rem;
 }
 
@@ -43,7 +43,7 @@
     border-bottom: 3px black solid;
 }
 
-.list-container .get-started{
+.list-container #get-started{
     padding: 0.5rem;
     border: 1.5px black solid;
     background-color: none;
@@ -52,7 +52,7 @@
     box-shadow: 0.15rem 0.15rem black;
 }
 
-.list-container .get-started:hover{
+.list-container #get-started:hover{
     /*box-shadow: 0rem 0rem none;
     border-bottom: 0.5px black solid;*/
     background-color: lightpink;

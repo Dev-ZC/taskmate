@@ -16,9 +16,7 @@ export default function Nav() {
                     <li>
                         <a href="/projects" className="list-link">Contact</a>
                     </li>
-                    <li>
-                        <a href="/getstarted" className="get-started">Get Started</a>
-                    </li>
+                    <CustomLink to="/login" className="list-link" id="get-started">Get Started</CustomLink>
                 </ul>
             </div>    
         </nav>
