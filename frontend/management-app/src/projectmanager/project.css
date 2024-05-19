@@ -1,0 +1,16 @@
+.project-container {
+    display: grid;
+    /* For Fractional grid
+    grid-template-columns: repeat(2fr 1fr);
+    grid-template-rows: repeat(2fr 1fr);*/
+
+    /* Controls sidebar width and nav width with rem */
+    grid-template-columns: 12rem 1fr;
+    grid-template-rows: 3rem 1fr;
+
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}

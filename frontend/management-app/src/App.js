@@ -1,11 +1,11 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-//Maybe include Link, may break it?
 import { Route, Routes, useLocation } from "react-router-dom"
 import Nav from './components/navbar/nav.js'
 import Landing from './components/landing/landing.js';
 import Pricing from './components/pricing/pricing.js';
-import ProjectNav from './projectmanager/projectNav.js';
+// Importing directly to project instead
+/*import ProjectNav from './projectmanager/projectNav.js';*/
 import Project from './projectmanager/project.js';
 
 
@@ -19,7 +19,8 @@ function App() {
 
   useEffect(() => {
     if (location.pathname.includes(managementRoute)) {
-      setCurrNav(<ProjectNav />);
+      /*setCurrNav(<ProjectNav />);*/
+      setCurrNav();
     } else {
       setCurrNav(<Nav />);
     }

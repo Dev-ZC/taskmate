@@ -1,3 +1,54 @@
+.pricing-container {
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
+.pricing-card-holder{
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 6rem 0;
+}
+
+
 .pricing-card{
-    
+    padding: 1.5rem;
+    border: 0.2rem solid lightgray;
+    border-radius: 10px;
+    text-align: left;
+    width: 15rem;
+    height: 35rem;
+}
+
+.pricing-card-title {
+    font-weight: 300;
+    margin: 1.2rem 0;
+}
+
+.pricing-card-price {
+    font-size: 3rem;
+    font-weight: 600;
+    margin: 1rem 0;
+}
+
+.pricing-card-content-holder {
+    border-top: 0.15rem solid lightgray;
+    margin: 0 0;
+    padding: 0.5rem 0;
+}
+
+/* Stylings for the card Features */
+.pricing-card-content-holder > div{
+    display: flex;
+    margin: 1.2rem 0;
+}
+
+.pricing-card-content-holder > div > img{
+    margin: 0 0.5rem;
+    width: 1rem;
+    height: 1rem;
+}
+
+.pricing-card-content-holder > div > p{
+    margin: 0rem 0rem;
 }

@@ -1,16 +1,16 @@
-.initial-container {
+.initial-container .initial-container-item{
     align-items: center;
     text-align: center;
-    margin: 10rem;
+    margin: 6rem 0;
     font-family: 'Poppins', sans-serif;
 }
 
-.initial-container div{
+.initial-container .initial-container-item{
     align-items: center;
 }
 
 .initial-container h1{
-    font-size: 4rem;
+    font-size: 3.8rem;
     font-weight: 600;
     margin: 0;
 }
@@ -29,7 +29,7 @@
     line-height: 2rem;
 }
 
-.initial-container a{
+.free-trial-btn{
     text-decoration: none;
     font-weight: 500;
     color: black;
@@ -43,7 +43,7 @@
     box-shadow: 0.2rem 0.2rem black;
 }
 
-.initial-container a:hover{
+.free-trial-btn:hover{
     /*color: black;
     box-shadow: none;*/
     background-color: lightcyan;

@@ -32,6 +32,8 @@
     border-bottom: none;
     transition: linear 200ms;
     padding: 1.5rem;
+    font-size: 1rem;
+    transition: linear 50ms;
 }
 
 /*
@@ -45,11 +47,12 @@
 
 .list-container #get-started{
     padding: 0.5rem;
-    border: 1.5px black solid;
+    margin-right: 1rem;
+    border: 0.16rem black solid;
     background-color: none;
     border-radius: 10px;
     transition: linear 100ms;
-    box-shadow: 0.15rem 0.15rem black;
+    box-shadow: 0.2rem 0.2rem black;
 }
 
 .list-container #get-started:hover{

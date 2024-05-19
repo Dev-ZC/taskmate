@@ -4,22 +4,25 @@ import './landing.css'
 function Landing() {
     return(
         <div className="initial-container">
-            <div>
+            <div className='initial-container-item'>
                 <h1>
-                    Automate Your Project Management
+                    Automate Project <br></br> Management
                 </h1>
                 <div className="initial-smalltext">
                     <p>    
                         Try our project management platform integrated
                         with a personalized AI assistant
-
                     </p>
                 </div>
-                <a href="/">
+                <a className='free-trial-btn' href="/">
                     Use Taskmate for Free
                 </a>
             </div>
+            <div className='initial-container-item'>
+                <img src="" className='mainImg'></img>
+            </div>
         </div>
+
     );
 }
 
