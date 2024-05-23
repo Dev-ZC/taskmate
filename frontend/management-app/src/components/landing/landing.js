@@ -6,7 +6,7 @@ function Landing() {
         <div className="initial-container">
             <div className='initial-container-item'>
                 <h1>
-                    Automate Project <br></br> Management
+                    Get work done. <br></br> Even in your sleep.{/* Get work done while your sleep or Automate Project Management*/}
                 </h1>
                 <div className="initial-smalltext">
                     <p>    

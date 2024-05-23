@@ -1,16 +1,125 @@
 .project-container {
+    background-color: var(--primaryColor);
     display: grid;
     /* For Fractional grid
     grid-template-columns: repeat(2fr 1fr);
     grid-template-rows: repeat(2fr 1fr);*/
 
-    /* Controls sidebar width and nav width with rem */
+    /* Controls sidebar width and nav height with rem */
     grid-template-columns: 12rem 1fr;
-    grid-template-rows: 3rem 1fr;
+    grid-template-rows: 2.5rem 1fr;
 
     grid-column-gap: 0px;
     grid-row-gap: 0px;
 
     min-height: 100vh;
     font-family: 'Poppins', sans-serif;
+}
+
+/* Render Frame Styling */
+
+.render-frame {
+    grid-area: 2 / 2 / 3 / 3;
+}
+
+/* Chat bot bar */
+.chat-bar-holder {
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0rem;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.chat-bar,
+.max-min-btn {
+    margin-bottom: 2rem;
+    margin-top: 0.4rem; /* Alter this if top blur gets cut off*/
+}
+
+.max-min-btn {
+    margin-left: 3rem;
+}
+
+.chat-bar {
+    /*background-image: linear-gradient(center, #FFFFFF, #E8E8EC);*/
+    box-shadow: 0 0.2rem 0.3rem #6c6c6c;
+    border-radius: 5rem;
+    overflow: hidden;
+    bottom: 2rem;
+    width: 50%;  /* Remove fixed width */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0;
+    padding: 0rem 0.8rem;
+}
+
+.max-min-btn {
+    background-color: transparent;
+    /*background-image: linear-gradient(to right, #FFFFFF, #E8E8EC);*/
+    box-shadow: 0 0.3rem 0.5rem #6c6c6c;
+    border-radius: 5rem;
+    transition: 100ms ease-in-out;
+}
+
+.max-min-btn:hover {
+    background-color: #e6e6e6;
+    background-image: none;
+    cursor: pointer;
+}
+
+.max-min-btn > img {
+    width: 2rem;
+    height: 2rem;
+    margin: 0.5rem 0.6rem; /* This padding is related to -------------< It controls height of all chat bar components*/
+}
+
+.input-hide-holder {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Grow to take up all available space */
+    gap: 1rem;
+}
+
+.input-bar {
+    background-color: transparent;
+    border: none;
+    width: 100%; /* Take up all available space */
+    padding: 0rem 0; /* This padding is related to -------------< */
+    font-size: 1.1rem;
+}
+
+.input-bar:focus {
+    outline: none; /* Remove the default focus outline */
+    /* Add your desired focus styles here if needed */
+}
+
+.hide-btn,
+.send-btn {
+    background-color: transparent;
+    border: none;
+    border-radius: 5rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem; 
+    transition: 100ms linear;
+}
+
+.hide-btn:hover,
+.send-btn:hover {
+    cursor: pointer;
+    background-color: #e6e6e6;
+}
+
+.hide-btn > img {
+    width: 2rem;
+    height: 2rem;
+}
+
+.send-btn > img {
+    width: 2rem;
+    height: 2rem;
 }

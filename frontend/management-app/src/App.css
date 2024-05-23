@@ -1,3 +1,11 @@
+:root{
+  --backgroundColor: #010C13;
+  --primaryColor: #f5f5f5;
+  --secondaryColor: lightgray;
+  --accentColor1: #eb8021;
+  --accentColor2: #F55002;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,4 +13,6 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background-color: var(--backgroundColor);
+  color: var(--primaryColor);
 }

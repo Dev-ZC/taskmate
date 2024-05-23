@@ -13,9 +13,8 @@ export default function Nav() {
                 <ul>
                     <CustomLink to="/" className="list-link">Home</CustomLink>
                     <CustomLink to="/pricing" className="list-link">Pricing</CustomLink>
-                    <li>
-                        <a href="/projects" className="list-link">Contact</a>
-                    </li>
+                    <CustomLink to="/contact" className="list-link">Contact</CustomLink>
+                    <CustomLink to="/login" className="list-link">Log in</CustomLink>
                     <CustomLink to="/login" className="list-link" id="get-started">Get Started</CustomLink>
                 </ul>
             </div>    

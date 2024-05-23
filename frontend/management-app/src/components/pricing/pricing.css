@@ -1,23 +1,27 @@
 .pricing-container {
     font-family: 'Poppins', sans-serif;
     text-align: center;
+    color: var(--primaryColor);
 }
 
 .pricing-card-holder{
     display: flex;
     justify-content: center;
     gap: 3rem;
-    margin: 6rem 0;
+    margin: 5rem 0;
+    color: var(--backgroundColor);
 }
 
 
 .pricing-card{
     padding: 1.5rem;
-    border: 0.2rem solid lightgray;
-    border-radius: 10px;
+    /*border: 0.2rem solid lightgray;*/
+    /*border-radius: 1rem;*/
+    background-color: var(--primaryColor);
     text-align: left;
-    width: 15rem;
-    height: 35rem;
+    width: 17rem;
+    /*height: 35rem;*/
+    height: fit-content;
 }
 
 .pricing-card-title {
@@ -26,21 +30,41 @@
 }
 
 .pricing-card-price {
-    font-size: 3rem;
-    font-weight: 600;
+    font-size: 3.5rem;
+    font-weight: 700;
     margin: 1rem 0;
 }
 
 .pricing-card-content-holder {
-    border-top: 0.15rem solid lightgray;
+    /*border-top: 0.15rem solid lightgray;*/
     margin: 0 0;
     padding: 0.5rem 0;
 }
 
+/* Color option for each card */
+#card-one-color {
+    background-color: var(--primaryColor);
+}
+
+#card-two-color {
+    background-color: var(--accentColor1);
+}
+
+#card-three-color {
+    background-color: var(--accentColor2);
+}
+
+
 /* Stylings for the card Features */
 .pricing-card-content-holder > div{
+    font-weight: 300;
     display: flex;
     margin: 1.2rem 0;
+}
+
+.pricing-card-title-container > p {
+    opacity: 0.4;
+    margin: 0;
 }
 
 .pricing-card-content-holder > div > img{
@@ -51,4 +75,31 @@
 
 .pricing-card-content-holder > div > p{
     margin: 0rem 0rem;
+}
+
+/* Button Stylings */
+.pricing-btn-holder {
+    margin: 1rem 0rem;
+    margin-top: 0.3rem;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.pricing-btn {
+    background-color: var(--backgroundColor);
+    color: var(--primaryColor);
+    text-decoration: none;
+    padding: 1rem 4rem;
+    transition: linear 100ms;
+}
+
+.pricing-btn:hover {
+    opacity: 0.8;
+}
+
+/* Pricing Tagline */
+.pricing-tagline {
+    margin-top: 5rem;
+    font-size: 3rem;
 }

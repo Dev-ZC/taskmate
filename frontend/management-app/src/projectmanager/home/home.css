@@ -1,0 +1,58 @@
+.project-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black;
+    width: 100%;
+}
+
+/* All header/tracker content */
+.header-content {
+    display: flex;
+    flex-direction: row;
+    gap: 7rem;
+    text-align: left;
+}
+
+.greeting {
+    width: 100%;
+    margin-left: 1rem;
+}
+
+.greeting > h1{
+    font-size: 2.5rem;
+    font-weight: 300;
+}
+
+.greeting > h2{
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.task-tracker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    margin-left: 1rem;
+    width: 100%;
+}
+
+.task-tracker > div > h1{
+    font-size: 3.5rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.tracker-title {
+    font-size: 0.8rem;
+    font-weight: 200;
+
+}
+
+
+
+/* Info cards */
+.info-cards{
+
+}

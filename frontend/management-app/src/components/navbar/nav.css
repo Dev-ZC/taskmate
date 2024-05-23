@@ -1,6 +1,6 @@
 .nav {
     background-color: none;
-    color: black;
+    color: var(--primaryColor);
     font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: space-between;
@@ -25,7 +25,7 @@
     margin: 0;
     list-style: none;
     display: flex;
-    gap: 3rem;
+    gap: 1.5rem;
 }
 
 .list-container a{
@@ -34,6 +34,7 @@
     padding: 1.5rem;
     font-size: 1rem;
     transition: linear 50ms;
+    white-space: nowrap;
 }
 
 /*
@@ -42,21 +43,21 @@
 }*/
 
 .list-container .list-link:hover{
-    border-bottom: 3px black solid;
+    border-bottom: 3px var(--primaryColor) solid;
 }
 
 .list-container #get-started{
     padding: 0.5rem;
     margin-right: 1rem;
-    border: 0.16rem black solid;
+    border: 0.16rem var(--primaryColor) solid;
     background-color: none;
     border-radius: 10px;
     transition: linear 100ms;
-    box-shadow: 0.2rem 0.2rem black;
+    box-shadow: 0.2rem 0.2rem var(--primaryColor);
 }
 
 .list-container #get-started:hover{
     /*box-shadow: 0rem 0rem none;
     border-bottom: 0.5px black solid;*/
-    background-color: lightpink;
+    background-color: var(--accentColor2);
 }
