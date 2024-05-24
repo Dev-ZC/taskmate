@@ -1,22 +1,22 @@
 .project-home {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     color: black;
     width: 100%;
+    padding: 0 3rem; /* Creates right and left side spacing for smaller screens*/
 }
 
 /* All header/tracker content */
 .header-content {
     display: flex;
     flex-direction: row;
-    gap: 7rem;
+    gap: 1rem;
     text-align: left;
 }
 
 .greeting {
     width: 100%;
-    margin-left: 1rem;
 }
 
 .greeting > h1{
@@ -31,10 +31,9 @@
 
 .task-tracker {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     gap: 4rem;
-    margin-left: 1rem;
     width: 100%;
 }
 

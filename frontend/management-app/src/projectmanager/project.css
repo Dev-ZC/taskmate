@@ -7,7 +7,7 @@
 
     /* Controls sidebar width and nav height with rem */
     grid-template-columns: 12rem 1fr;
-    grid-template-rows: 2.5rem 1fr;
+    grid-template-rows: 2rem 1fr;
 
     grid-column-gap: 0px;
     grid-row-gap: 0px;
@@ -74,7 +74,7 @@
 .max-min-btn > img {
     width: 2rem;
     height: 2rem;
-    margin: 0.5rem 0.6rem; /* This padding is related to -------------< It controls height of all chat bar components*/
+    margin: 0.5rem 0.6rem; /* This padding is related to v-------------< It controls height of all chat bar components*/
 }
 
 .input-hide-holder {
@@ -88,13 +88,18 @@
     background-color: transparent;
     border: none;
     width: 100%; /* Take up all available space */
-    padding: 0rem 0; /* This padding is related to -------------< */
+    padding: 0rem 0; /* This padding is related to ^-------------< */
     font-size: 1.1rem;
 }
 
 .input-bar:focus {
     outline: none; /* Remove the default focus outline */
     /* Add your desired focus styles here if needed */
+}
+
+.input-bar:focus .chat-bar{
+    width: 40%;
+    background-color: blue;
 }
 
 .hide-btn,

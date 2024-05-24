@@ -53,7 +53,7 @@ export default function Sidebar(props) {
 
                     <Frame frameName="Home" frameType="Home" onPageSelect={props.onPageSelect} />
                     <Frame frameName="Calendar" frameType="Calendar" onPageSelect={props.onPageSelect} />
-                    <Frame frameName="Inbox" frameType="Inbox" onPageSelect={props.onPageSelect} />
+                    <Frame frameName="Automation" frameType="Automation" onPageSelect={props.onPageSelect} />
 
                     <p>General</p>
                     <form onSubmit= { handleSubmit } className='makeFrame'>
@@ -90,7 +90,7 @@ function Frame(props){
         src = homeIcon;
     } else if (props.frameType === "Calendar"){
         src = calendarIcon;
-    } else if (props.frameType === "Inbox"){
+    } else if (props.frameType === "Automation"){
         src = inboxIcon;
     } else if (props.frameType === "Doc"){
         src = docIcon;

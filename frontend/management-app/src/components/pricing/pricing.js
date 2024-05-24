@@ -16,7 +16,7 @@ export default function Pricing() {
         <div className="pricing-container">
             <div>
                 <h1 className='pricing-tagline'>
-                    Automate your project today 
+                    Automate daily tasks. <br></br>quickly and easily.
                 </h1>
             </div>
             <div className='pricing-card-holder'>

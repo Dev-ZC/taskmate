@@ -1,12 +1,13 @@
 import './projectNav.css'
+import moreIcon from './dotsHorizontal.png'
 
 export default function ProjectNav() {
 
     return(
         <div className="project-nav-holder">
-            <a href="/" className=''>Icon</a>
-            <a href="/login" className=''>Icon</a>
-            <a href="/login" className=''>Icon</a>
+            <button className='more-btn'>
+                <img src={moreIcon}></img>
+            </button>
         </div>
     );
 }

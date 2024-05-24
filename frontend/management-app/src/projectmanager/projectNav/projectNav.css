@@ -3,7 +3,24 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    padding-right: 3rem;
     gap: 3rem;
     background-color: none;
+}
+
+.more-btn {
+    background-color: transparent;
+    border: none;
+    margin: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.more-btn > img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.more-btn:hover {
+    cursor: pointer;
 }
