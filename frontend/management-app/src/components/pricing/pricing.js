@@ -56,12 +56,17 @@ function PricingCard(props) {
         idColor = "card-three-color"
     }
 
+    let pricingPer = "Monthly"
+    if (props.planName === "Basic"){
+        pricingPer = "One month"
+    }
+
     return(
         <div className="pricing-card" id={idColor}>
             <div className='pricing-card-title-container'>
                 <h2 className='pricing-card-title'>{props.planName}</h2>
                 <h2 className='pricing-card-price'>{props.price}</h2>
-                <p>Monthly</p>
+                <p>{ pricingPer }</p>
             </div>
             <div className='pricing-card-content-holder'>
                 {props.features.map((feature, index) => (

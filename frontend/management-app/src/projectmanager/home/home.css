@@ -4,13 +4,13 @@
     align-items: left;
     color: black;
     width: 100%;
-    padding: 0 3rem; /* Creates right and left side spacing for smaller screens*/
+    padding: 0rem 3rem 7rem 3rem; /* Creates right and left side spacing for smaller screens*/
+    gap: 2rem;
 }
 
 /* All header/tracker content */
 .header-content {
     display: flex;
-    flex-direction: row;
     gap: 1rem;
     text-align: left;
 }
@@ -51,7 +51,70 @@
 
 
 
-/* Info cards */
+/* Info cards ---------------------------------- */
 .info-cards{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    gap: var(--cardGap);
+    height: 50rem; /* Controls height of entire card area*/
+}
 
+#home-card {
+    width: 100%;
+    height: 100%;
+    background-color: #E8E8EC;
+    border-radius: 2rem;
+    padding: 2rem;
+}
+
+/* Left Side of Info cards */
+
+.info-cards .left-holder {
+    width: 100%;
+    flex: 1;
+}
+
+.info-cards .card-automated {
+    
+}
+
+.info-cards .chat-message {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 1rem;
+}
+
+.info-cards .chat-icon{
+    width: 3rem;
+    height: 3rem;
+}
+
+.info-cards .chat-message-content {
+    background-color: var(--primaryColor);
+    border-radius: 2rem 2rem 2rem 0.5rem;
+    padding: 0rem 1.5rem;
+    font-weight: 200;
+    line-height: 1.4rem;
+    font-size: 1rem;
+}
+
+/* Right Side of Info cards */
+
+.info-cards .right-holder{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: var(--cardGap);
+    flex: 2;
+}
+
+.info-cards .card-calendar {
+
+}
+
+.info-cards .card-priority-tasks {
+    
 }

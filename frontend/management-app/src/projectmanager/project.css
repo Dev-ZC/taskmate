@@ -17,7 +17,6 @@
 }
 
 /* Render Frame Styling */
-
 .render-frame {
     grid-area: 2 / 2 / 3 / 3;
 }
@@ -45,6 +44,8 @@
 
 .chat-bar {
     /*background-image: linear-gradient(center, #FFFFFF, #E8E8EC);*/
+    background-color: var(--primaryColor);
+
     box-shadow: 0 0.2rem 0.3rem #6c6c6c;
     border-radius: 5rem;
     overflow: hidden;
@@ -55,10 +56,12 @@
     justify-content: space-between;
     gap: 0;
     padding: 0rem 0.8rem;
+
+    transition: width 0.3s ease, padding 0.3s ease;
 }
 
 .max-min-btn {
-    background-color: transparent;
+    background-color: var(--primaryColor);
     /*background-image: linear-gradient(to right, #FFFFFF, #E8E8EC);*/
     box-shadow: 0 0.3rem 0.5rem #6c6c6c;
     border-radius: 5rem;
@@ -72,9 +75,10 @@
 }
 
 .max-min-btn > img {
-    width: 2rem;
-    height: 2rem;
-    margin: 0.5rem 0.6rem; /* This padding is related to v-------------< It controls height of all chat bar components*/
+    padding: 0.2rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin: 0.6rem 0.6rem 0.3rem 0.6rem; /* This padding is related to v-------------< It controls height of all chat bar components*/
 }
 
 .input-hide-holder {
@@ -85,7 +89,7 @@
 }
 
 .input-bar {
-    background-color: transparent;
+    background-color: var(--primaryColor);
     border: none;
     width: 100%; /* Take up all available space */
     padding: 0rem 0; /* This padding is related to ^-------------< */
@@ -120,11 +124,38 @@
 }
 
 .hide-btn > img {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .send-btn > img {
-    width: 2rem;
-    height: 2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Chat Display */
+.chat-display {
+    background-color:gray;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: fixed;
+    bottom: 5.5rem;
+    margin-left: 6rem;
+    width: 52%;  /* Remove fixed width */
+    padding: 0rem 0.8rem;
+    /*height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease;*/
+    transition: height 0.3s ease, padding 0.3s ease;
+}
+
+/*
+.chat-display.show{
+    height: auto;
+}*/
+
+.chat-message {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

@@ -4,6 +4,8 @@
   --secondaryColor: lightgray;
   --accentColor1: #eb8021;
   --accentColor2: #F55002;
+
+  --cardGap: 3rem;
 }
 
 * {

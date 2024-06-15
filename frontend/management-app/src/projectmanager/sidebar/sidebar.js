@@ -2,10 +2,9 @@ import { useState } from 'react';
 import menuIcon from './menu.png'
 import homeIcon from './homeIcon.png'
 import calendarIcon from './calendarIcon.png'
-import inboxIcon from './inboxIcon.png'
+import wrenchIcon from './wrenchIcon.png'
 import docIcon from './docIcon.png'
 import './sidebar.css'
-import Home from '../home/home.js'
 
 export default function Sidebar(props) {
     /* This info will be fetched later*/ 
@@ -91,7 +90,7 @@ function Frame(props){
     } else if (props.frameType === "Calendar"){
         src = calendarIcon;
     } else if (props.frameType === "Automation"){
-        src = inboxIcon;
+        src = wrenchIcon;
     } else if (props.frameType === "Doc"){
         src = docIcon;
     } 
