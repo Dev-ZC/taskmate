@@ -135,18 +135,36 @@
 
 /* Chat Display */
 .chat-display {
-    background-color:gray;
+    /* From https://css.glass */
+    background: rgba(255, 255, 255, 0.6); 
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    color: black;
     border-radius: 1rem;
     overflow: hidden;
     position: fixed;
     bottom: 5.5rem;
     margin-left: 6rem;
     width: 52%;  /* Remove fixed width */
-    padding: 0rem 0.8rem;
-    /*height: 0;
+    max-height: 25rem; /* Sets desired max-height */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds max-height */
+    scrollbar-width: none;
+    transition: scroll-behavior 0.3s ease; /* Smooth scrolling behavior */
+    user-select: text;
+}
+
+.hidden {
+    height: 0;
     overflow: hidden;
-    transition: height 0.5s ease;*/
-    transition: height 0.3s ease, padding 0.3s ease;
+    transition: height 0.3s ease;
+}
+
+.visible {
+    height: auto;
+    transition: height 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.60);
 }
 
 /*
@@ -158,4 +176,24 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin: 0;
+}
+
+.chat-message-text {
+    background-color: var(--primaryColor);
+    font-weight: 200;
+    line-height: 1.4rem;
+    font-size: 1rem;
+    padding: 1rem 2rem;
+    margin: 1rem;
+    border: 1px solid rgba(200, 200, 200);
+    max-width: 70%;
+}
+
+.chat-message-text-user {
+    border-radius: 2rem 2rem 0.5rem 2rem;
+}
+
+.chat-message-text-non-user {
+    border-radius: 2rem 2rem 2rem 0.5rem;
 }

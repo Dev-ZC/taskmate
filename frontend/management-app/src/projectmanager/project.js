@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import '../App.css'
 import './project.css'
@@ -89,29 +89,76 @@ function ChatBar (){
     const [displayChat, setDisplayChat] = useState(false); // State to control chat display (none or block)
     const [displayBar, setDisplayBar] = useState(true); // State to control chat display (none or block)
     const [searchInput, setSearchInput] = useState("");
-
     const inputRef = useRef(null); // Used to for MaxMin to focus input tag
+    const contentRef = useRef(null); // Used for display chat transition
+
+    // Handles display 
+    useEffect(() => {
+        if (displayChat) {
+          // Trigger reflow to ensure the transition works
+          contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+        } else {
+          contentRef.current.style.height = '0px';
+        }
+      }, [displayChat]);
+    
+    useEffect(() => {
+    if (displayChat) {
+        // Update the height whenever messages change
+        // contentRef.current.style.height = 'auto'; // Temporarily set to auto to get the new scrollHeight
+        const scrollHeight = contentRef.current.scrollHeight; // Get the scroll height
+        contentRef.current.style.height = '0px'; // Reset to 0px
+        setTimeout(() => {
+        contentRef.current.style.height = `${scrollHeight}px`; // Set to scrollHeight
+        scrollToBottom();
+        }, 0); // Delay to allow DOM update
+    }
+    }, [messages, displayChat]);
+
+    const scrollToBottom = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTo({
+              top: contentRef.current.scrollHeight,
+              behavior: 'smooth' // Smooth scrolling behavior
+            });
+          }
+      };
 
     const handleChange = (e) => {
         e.preventDefault();
         setSearchInput(e.target.value);
-    };
+    };  
 
     // Sends message written in chat bar to api end point
     const sendChatMessage = () => {
-        //e.preventDefault(); // Prevent the default behavior of the button
-        //inputRef.current.focus();
         if (searchInput.trim() === "") return;
     
         axios.post('http://127.0.0.1:8000/api/messages', { message: searchInput, sender_id: senderId, sender_type: "user" })
             .then(response => {
                 console.log("Message sent:", response.data);
 
-                setMessages(prevMessages => [...prevMessages, response.data]);
+                setMessages(prevMessages => [...prevMessages, response.data]); // Add user message to message log
 
                 console.log(messages)
 
                 setSearchInput("");  // Clear the input field after sending
+
+                // Second Axios call to get AI response
+                axios.post(`http://127.0.0.1:8000/api/ai_response?user_id=${senderId}`)
+                    .then(aiResponse => {
+                        console.log("AI Response:", aiResponse.data);
+
+                        // Handle AI response as needed (e.g., update state)
+                        // Adds AI message to message log with sender_type 'bot'
+                        setMessages(prevMessages => [
+                            ...prevMessages,
+                            { message: aiResponse.data.response, sender_type: 'bot' }
+                        ]);
+                    })
+                    .catch(error => {
+                        console.error("Error getting AI response:", error);
+                        // Handle error if necessary
+                    });
             })
             .catch(error => {
                 console.error("Error sending message:", error);
@@ -183,7 +230,10 @@ function ChatBar (){
 
     return(
         <>
-            <div className='chat-display' tabIndex="1" style={{ display: displayChat ? 'block' : 'none' }}>
+            <div 
+            className={`chat-display ${displayChat ? 'visible' : 'hidden'}`} 
+            ref={contentRef}
+            tabIndex="1">
                 {messages.map((msg, index) => (
                     <ChatMessage key={index} message={msg.message} sender_type={msg.sender_type} />
                 ))}
@@ -223,15 +273,26 @@ function ChatBar (){
 }
 
 function ChatMessage(props){
+    const isUser = (props) => {
+        if (props.sender_type === 'user') {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     // If sender_type is user align items right, else align left
     const chatMessageStyle = {
-        justifyContent: props.sender_type === 'user' ? 'flex-end' : 'flex-start',
+        justifyContent: isUser(props) ? 'flex-end' : 'flex-start'
+    };
+
+    const chatMessageUser = (props) => {
+        return isUser(props) ? 'chat-message-text-user' : 'chat-message-text-non-user';
     };
     
     return (
         <div className='chat-message' style={chatMessageStyle}>
-            <p className='chat-message-text'>{props.message}</p>
+            <p className={`chat-message-text ${chatMessageUser(props)}`}>{props.message}</p>
         </div>
     )
 }
