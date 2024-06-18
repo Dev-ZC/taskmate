@@ -1,5 +1,12 @@
+from enum import Enum
 from typing import List
 from pydantic import BaseModel
+
+class SenderType(Enum):
+    USER = "user"
+    BOT = "bot"
+    SYSTEM = "system"
+    UNKNOWN = "unknown"
 
 class User(BaseModel):
     id: int

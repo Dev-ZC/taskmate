@@ -81,11 +81,12 @@ function RenderFrame(props) {
 function ChatBar (){
     let senderId = 1; // Change later, so it is set to a real sender Id
 
-    const [messages, setMessages] = useState([
+    const [messages_ex, setMessages_ex] = useState([
         // Example initial messages
         { message: 'Hello!', sender_type: 'user' },
         { message: 'Hi there!', sender_type: 'bot' }
     ]); // List of messages, SHOULD BE CACHED LATER
+    const [messages, setMessages] = useState([]);
     const [displayChat, setDisplayChat] = useState(false); // State to control chat display (none or block)
     const [displayBar, setDisplayBar] = useState(true); // State to control chat display (none or block)
     const [searchInput, setSearchInput] = useState("");
@@ -130,6 +131,7 @@ function ChatBar (){
     };  
 
     // Sends message written in chat bar to api end point
+    // and receive AI response
     const sendChatMessage = () => {
         if (searchInput.trim() === "") return;
     
@@ -144,7 +146,7 @@ function ChatBar (){
                 setSearchInput("");  // Clear the input field after sending
 
                 // Second Axios call to get AI response
-                axios.post(`http://127.0.0.1:8000/api/ai_response?user_id=${senderId}`)
+                axios.post(`http://127.0.0.1:8000/api/ai_response?user_id=${senderId}`, {message: searchInput, sender_id: senderId, sender_type: "user"})
                     .then(aiResponse => {
                         console.log("AI Response:", aiResponse.data);
 
@@ -198,6 +200,12 @@ function ChatBar (){
             } else {
                 showMessageTree();
             }
+        }
+        setDisplayChat(!displayChat);
+        if (displayChat) {
+            inputRef.current.blur();
+        } else {
+            inputRef.current.focus();
         }*/
     }
 
@@ -233,7 +241,7 @@ function ChatBar (){
             <div 
             className={`chat-display ${displayChat ? 'visible' : 'hidden'}`} 
             ref={contentRef}
-            tabIndex="1">
+            tabIndex="0.5">
                 {messages.map((msg, index) => (
                     <ChatMessage key={index} message={msg.message} sender_type={msg.sender_type} />
                 ))}
