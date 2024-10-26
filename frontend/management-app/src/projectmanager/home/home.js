@@ -62,10 +62,10 @@ export default function Home(props) {
                 </section>
                 <section className='right-holder'>
                     <div className='card-calendar' id="home-card">
-                        s
+                        Calendar
                     </div>
                     <div className='card-priority-tasks' id="home-card">
-                        s
+                        To Do List (Most Urgent)
                     </div>
                 </section>
             </div>

@@ -4,6 +4,8 @@ import { Route, Routes, useLocation } from "react-router-dom"
 import Nav from './components/navbar/nav.js'
 import Landing from './components/landing/landing.js';
 import Pricing from './components/pricing/pricing.js';
+import Login from './components/login/login.js';
+import Signup from './components/signup/signup.js';
 // Importing directly to project instead
 /*import ProjectNav from './projectmanager/projectNav.js';*/
 import Project from './projectmanager/project.js';

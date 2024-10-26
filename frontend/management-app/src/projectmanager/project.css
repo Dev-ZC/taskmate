@@ -136,7 +136,7 @@
 /* Chat Display */
 .chat-display {
     /* From https://css.glass */
-    background: rgba(255, 255, 255, 0.6); 
+    background: rgba(255, 255, 255, 0.8); 
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(9px);
@@ -148,20 +148,20 @@
     bottom: 5.5rem;
     margin-left: 6rem;
     width: 52%;  /* Remove fixed width */
-    max-height: 25rem; /* Sets desired max-height */
+    max-height: 70%; /* Sets desired max-height */
     overflow-y: auto; /* Enable vertical scrolling when content exceeds max-height */
     scrollbar-width: none;
     transition: scroll-behavior 0.3s ease; /* Smooth scrolling behavior */
     user-select: text;
 }
 
-.hidden {
+.chat-hidden {
     height: 0;
     overflow: hidden;
     transition: height 0.5s ease;
 }
 
-.visible {
+.chat-visible {
     height: auto;
     transition: height 0.7s ease;
     /*border: 1px solid rgba(255, 255, 255, 0.60);*/
@@ -175,8 +175,16 @@
 .chat-message {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-self: flex-start;
     margin: 0;
+}
+
+.chat-message-img {
+    width: 3rem;
+    height: 3rem;
+    align-self: flex-end;
+    margin-bottom: 1rem;
+    margin-left: 1rem
 }
 
 .chat-message-text {
@@ -187,7 +195,7 @@
     padding: 1rem 1.5rem;
     margin: 1rem;
     border: 1px solid rgba(200, 200, 200);
-    max-width: 70%;
+    max-width: 60%;
 }
 
 .chat-message-text-user {

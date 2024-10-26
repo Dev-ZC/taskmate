@@ -1,9 +1,12 @@
-import { useState } from 'react';
-import menuIcon from './menu.png'
+import { useState, useRef } from 'react';
+import menuIcon from '../menu.png'
 import homeIcon from './homeIcon.png'
 import calendarIcon from './calendarIcon.png'
 import wrenchIcon from './wrenchIcon.png'
 import docIcon from './docIcon.png'
+import plusIcon from './plusIcon.png'
+import networkIcon from './networkIcon.png'
+import inboxIcon from './inboxIcon.png'
 import './sidebar.css'
 
 export default function Sidebar(props) {
@@ -16,6 +19,10 @@ export default function Sidebar(props) {
     const [newFrame, setNewFrame] = useState("") /* Stores new frames name */
     const [frames, setFrames] = useState(props.storedFrames) /* Stores the set of frames to be rendered */
 
+    const [makeFrameDisplay, setMakeFrameDisplay] = useState(false)
+    const [titleHovered, setTitleHovered] = useState(false)
+    const makeFrameRef = useRef(null);
+
     /* Creating a new frame on submit */
     function handleSubmit(e) {
         e.preventDefault()
@@ -26,9 +33,29 @@ export default function Sidebar(props) {
                 /* Later on add the functionality to store new frames in database -----? */
 
                 ...currentframes, 
-                { id: crypto.randomUUID(), frameName: newFrame },
+                { id: crypto.randomUUID(), frameName: newFrame, frameType: "Doc" },
             ]
         })
+
+        /* Make the text input hidden after input */
+        handleNewFrame()
+    }
+
+    function handleNewFrame(){
+        setMakeFrameDisplay(makeFrameDisplay => !makeFrameDisplay)
+        /*
+        if (makeFrameDisplay){
+            makeFrameRef.current.focus();
+        }
+        */
+    }
+
+    const handleTitleHover = () => {
+        setTitleHovered(true)
+    }
+
+    const handleTitleLeave = () => {
+        setTitleHovered(false)
     }
 
     /* All data passed into each frame */
@@ -51,16 +78,22 @@ export default function Sidebar(props) {
                 <div className="section-general">
 
                     <Frame frameName="Home" frameType="Home" onPageSelect={props.onPageSelect} />
+                    <Frame frameName="Inbox" frameType="Inbox" onPageSelect={props.onPageSelect} />
                     <Frame frameName="Calendar" frameType="Calendar" onPageSelect={props.onPageSelect} />
+                    <Frame frameName="Network" frameType="Network" onPageSelect={props.onPageSelect} />
                     <Frame frameName="Automation" frameType="Automation" onPageSelect={props.onPageSelect} />
 
-                    <p>General</p>
-                    <form onSubmit= { handleSubmit } className='makeFrame'>
+                    <span className='sidebar-title-holder' onMouseEnter={ handleTitleHover } onMouseLeave={ handleTitleLeave }>
+                        <p className='sidebar-title'>Pages</p>
+                        <img src={plusIcon} onClick={ handleNewFrame } className={`${titleHovered ? 'makePlusVisible':'makePlusHidden'}`}></img>
+                    </span>
+                    <form onSubmit= { handleSubmit } className={`makeFrame ${makeFrameDisplay ? 'makeFrameVisible':'makeFrameHidden'}`}>
                         <div className='form-row'>
-                            <label>New Frame</label>
                             <input
+                                ref={makeFrameRef}
                                 value={newFrame}
                                 onChange={e => setNewFrame(e.target.value)}
+                                onBlur={ handleNewFrame }
                                 type="text"
                                 id="item"
                             />
@@ -68,18 +101,22 @@ export default function Sidebar(props) {
                     </form>
                     { frameItems }
                 </div>
-                <div className="section-more">
-                    <p>More</p>
-                </div>
+                
+                {/*<section className="section-more">
+                    <span className='sidebar-title-holder'>
+                        <p className='sidebar-title'>Workspaces</p>
+                        <img src={plusIcon}></img>
+                    </span>
+                </section>*/}
             </div>
         </div>
     );
 }
 
 function Frame(props){
-    /* Data passed back to render frame when button is clicked*/
+    /* Data passed back to render frame when button is clicked */
     const handleChange = () => {
-        /* We pass back both frametype and framename to be used by RenderFrame*/
+        /* We pass back both frametype and framename to be used by RenderFrame */
         props.onPageSelect(props.frameType, props.frameName, props.id);
     };
 
@@ -93,6 +130,10 @@ function Frame(props){
         src = wrenchIcon;
     } else if (props.frameType === "Doc"){
         src = docIcon;
+    } else if (props.frameType === "Network"){
+        src = networkIcon;
+    } else if (props.frameType === "Inbox"){
+        src = inboxIcon;
     } 
 
     return(

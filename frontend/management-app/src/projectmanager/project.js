@@ -7,7 +7,12 @@ import sendIcon from './sendIconDark.png'
 import maxIcon from './maxIcon.png'
 import Sidebar from './sidebar/sidebar.js';
 import ProjectNav from './projectNav/projectNav.js';
+import chatIcon from './chatIcon.png'
 import Home from './home/home.js'
+import Calendar from './calendar/calendar.js'
+import Automation from './automation/automation.js'
+import Inbox from './inbox/inbox.js'
+import Network from './network/network.js'
 
 export default function Project() {
     const [pageToLoad, setPageToLoad] = useState(['Home', 'Home', ''])
@@ -62,8 +67,8 @@ function RenderFrame(props) {
     const frameType = props.pageToLoad[0];
     const frameName = props.pageToLoad[1];
     const frameId = props.pageToLoad[2];
-    console.log(frameId)
 
+    console.log(frameType, frameName)
 
     return(
         /* Frametype decides what component to render */
@@ -73,6 +78,10 @@ function RenderFrame(props) {
         docs components instead of Home, Calendar, and Inbox*/
         <div className='render-frame'>
             {frameType === 'Home' && <Home pageName={frameName} />} 
+            {frameType === 'Inbox' && <Inbox pageName={frameName} />} 
+            {frameType === 'Calendar' && <Calendar pageName={frameName} />} 
+            {frameType === 'Network' && <Network pageName={frameName} />} 
+            {frameType === 'Automation' && <Automation pageName={frameName} />} 
             <ChatBar />
         </div>
     );
@@ -239,7 +248,7 @@ function ChatBar (){
     return(
         <>
             <div 
-            className={`chat-display ${displayChat ? 'visible' : 'hidden'}`} 
+            className={`chat-display ${displayChat ? 'chat-visible' : 'chat-hidden'}`} 
             ref={contentRef}
             tabIndex="0.5">
                 {messages.map((msg, index) => (
@@ -294,12 +303,20 @@ function ChatMessage(props){
         justifyContent: isUser(props) ? 'flex-end' : 'flex-start'
     };
 
+    //Alters styling depending on user or non-user
     const chatMessageUser = (props) => {
         return isUser(props) ? 'chat-message-text-user' : 'chat-message-text-non-user';
     };
+
+    const useChatIcon = (props) => {
+        return isUser(props) ? '' : chatIcon;
+    }
+
+    const iconSrc = useChatIcon(props);
     
     return (
         <div className='chat-message' style={chatMessageStyle}>
+            {iconSrc && <img src={iconSrc} className='chat-message-img' alt="Chat Icon" />}
             <p className={`chat-message-text ${chatMessageUser(props)}`}>{props.message}</p>
         </div>
     )

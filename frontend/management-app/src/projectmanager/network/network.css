@@ -1,0 +1,199 @@
+.network-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: black;
+    margin-bottom: 8rem;
+    width: 100%;
+}
+
+.network-header {
+    width: 90%;
+}
+
+.network-header > h1{
+    font-weight:lighter;
+    font-size: 3rem;
+    margin: 1rem 0 1rem 0;
+}
+
+.network-divider {
+    display: block;
+    width: 100%;
+    height: 0.1rem;
+    background-color: var(--backgroundColor);
+}
+
+.network-tools {
+    width: 90%;
+}
+
+.network-info {
+    width: 90%;
+}
+
+/* Search Bar */
+.search-bar{
+    border-radius: 15px;
+    border: 1px solid black;
+}
+
+/* Folder Header */
+.folder-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: end;
+    margin-top: 3rem;
+    padding-bottom: 1rem;
+}
+
+.folder-header-expand > img{
+    width: 1.5rem;
+    height: 1.5rem;
+    rotate: 180deg;
+    cursor: pointer;
+}
+
+.folder-header-title {
+    font-size: 1.8rem;
+    font-weight: 200;
+    margin: 0 0.5rem;
+}
+
+.folder-header-add-folder {
+
+}
+
+.folder-header-add-folder > img {
+    
+}
+
+.folder-header-add-card > img {
+    
+}
+
+.folder-header-add-folder > img, .folder-header-add-card > img {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0 0.5rem;
+    opacity: 0.2;
+    transition: ease-in-out 0.2s;
+    cursor: pointer;
+}
+
+.folder-header-add-folder > img:hover, .folder-header-add-card > img:hover {
+    opacity: 1;
+    rotate: 20deg;
+}
+
+.folder-body {
+    scrollbar-width: none;
+}
+
+/* Info Card */
+.info-card-holder {
+    margin: 0.8rem 0 0.8rem 0;
+}
+
+.info-card{
+    border: 1px solid #D3D3D3;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.info-card-min {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.info-card-min-name {
+    background-color: lightgray;
+    width: 15%;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    align-content: center;
+    color: white;
+    cursor: pointer;
+}
+
+/*
+Notes:
+-Use css grid instead of flex to divide space into three even fr's then center text within each fr
+-Find out how to black background color underneath div without changing background of inner div
+*/
+.info-card-min-section {
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr 1fr; 
+    grid-template-rows: 1fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+    ". . . ."; 
+    align-items: center;
+    width: 85%;
+    text-align: center;
+    user-select: none;
+}
+
+.info-card-min-descriptor {
+    font-size: 1rem;
+    font-weight: 200;
+    color: #D3D3D3;
+    padding: 0;
+}
+
+.info-display {
+    margin: 0.3rem 0;
+    font-size: 1rem;
+    font-weight: 200;
+}
+
+.info-input {
+    background-color: transparent;
+    margin: 0.3rem 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: lighter;
+    outline: none;
+    cursor: pointer;
+    border: none;
+}
+
+.info-input-name {
+    background-color: transparent;
+    margin: 0.3rem 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: lighter;
+    outline: none;
+    cursor: pointer;
+    border: none;
+    color: white;
+}
+
+.info-display-accessories {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info-card-btn {
+    border: 1px lightgray solid;
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 0.5rem 2.8rem;
+    cursor: pointer;
+    transition: 80ms linear;
+}
+
+.info-card-arrow {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 2rem;
+    cursor: pointer;
+}
+
+.info-card-btn:hover {
+    background-color: lightgray;
+}
