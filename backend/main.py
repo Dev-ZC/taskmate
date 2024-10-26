@@ -1,5 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, HTTPException, Depends, Query, WebSocket
+from fastapi import FastAPI, HTTPException, Depends, Query, WebSocket, Body, Response, Request, Cookie
+from fastapi.responses import JSONResponse
+from supabase import create_client
 
 from db_tools import *
 from models import *
@@ -10,11 +12,14 @@ from uuid import UUID, uuid4
 from dotenv import load_dotenv
 import os
 import json
+import logging
 
 from mistralai.models.chat_completion import ChatMessage
 from mistralai.client import MistralClient
 
-
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_anon_key = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(supabase_url, supabase_anon_key)
 
 load_dotenv()
 
@@ -25,6 +30,7 @@ db_manager = DB_Manager()
 API_KEY = os.getenv("API_KEY")
 MODEL = os.getenv("MODEL")
 simulate_response = True
+is_secure = False
 
 messages_ex = [
     Message(message='Hello!', sender_id=1, sender_type='user'),
@@ -36,7 +42,7 @@ messages = []
 # Allows cross origin requests with react and fast api
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Adjust this to match your React app's origin
+    allow_origins=["http://localhost:3000"],  # Specify your React app's URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -110,23 +116,157 @@ async def fetch_user_calendar(sender_id: int):
         raise HTTPException(status_code=500, detail=f"Error fetching user calendar: {str(e)}")
     
     
-# Auth
-@app.post("api/signup")
-async def signup(email: str, password: str, first_name: str, last_name: str) -> str:
+# >>>---------------- Auth -------------------<<<
+@app.get("/api/get_client")
+async def get_client():
     try:
-        db_manager.sign_up(email, password, first_name, last_name)
-        return "User signed up!"
+        # Attempt to sign up the user
+        response = db_manager.get_client()
+        
+        return response
+    
+    except Exception as e:
+        # Catch any unexpected errors and raise a generic HTTP exception
+        raise HTTPException(status_code=500, detail=f"Unable to get client: {str(e)}")
+
+@app.post("/api/signup")
+async def signup(
+    response: Response,
+    email: str = Body(...),
+    password: str = Body(...),
+    first_name: str = Body(...),
+    last_name: str = Body(...)
+):
+    try:
+        signup_response = supabase.auth.sign_up(
+            {
+                "email": email, 
+                "password": password,
+                "options": {"data": {"first_name": first_name, "last_name": last_name, "email": email}},
+            }
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unable to sign up user: {str(e)}")
-    
-@app.post("api/login")
-async def login(email: str, password: str) -> str:
+
+    session = signup_response.session
+    if session:
+        # Clear existing cookies
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        # Set new access and refresh tokens
+        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=True, expires=3600, samesite="None")
+        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+
+    return {"message": "User created successfully"}
+
+@app.post("/api/login")
+async def login(response: Response, email: str = Body(...), password: str = Body(...)):
     try:
-        db_manager.sign_in(email, password)
-        return "User logged in!"
+        login_response = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unable to sign in user: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Unable to log in: {str(e)}")
+
+    if "error" in login_response:
+        raise HTTPException(status_code=400, detail=login_response["error"]["message"])
+
+    session = login_response.session
+    if session:
+        # Clear existing cookies
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        # Set new access and refresh tokens
+        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=True, expires=3600, samesite="None")
+        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+
+    return {"message": "Login successful"}
+
+@app.post("/api/refresh")
+async def refresh_token(response: Response, request: Request):
+    refresh_token = request.cookies.get("refresh_token")
+    print(refresh_token)
+    if not refresh_token:
+        raise HTTPException(status_code=402, detail="Refresh token missing")
+
+    try:
+        # Call Supabase to refresh the token
+        refresh_response = supabase.auth.refresh_session(refresh_token)
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=f"Refresh token invalid: {str(e)}")
+
+    if refresh_response.session:
+        # Get the new session access and refresh tokens
+        new_access_token = refresh_response.session.access_token
+        new_refresh_token = refresh_response.session.refresh_token
+
+        # Clear access and refresh tokens from cookies
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+
+        # Set a new access token cookie
+        response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=True, expires=3600, samesite="None")
+        response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+
+        return {"message": "Access token refreshed successfully"}
+
+    raise HTTPException(status_code=500, detail="Unable to refresh access token")
+
         
+@app.get("/api/verify_session")
+async def verify_session(request: Request):
+    # Updated method "async def read_cookie(my_cookie: Annotated[str | None, Cookie()] = None):"
+    token = request.cookies.get("access_token")
+    # print(f"Received token: {token}")  # Log the token
+
+    if not token:
+        raise HTTPException(status_code=401, detail="Access token missing")
+
+    try:
+        response = supabase.auth.get_user(token)
+        # print(f"Supabase response: {response}")  # Log the response
+        if response.user:
+            return {"isAuthenticated": True}
+        else:
+            return {"isAuthenticated": False}
+    except Exception as e:
+        return {"isAuthenticated": False, "error": str(e)}
+
+# Getting user data
+@app.get("/api/user_profile")
+async def user_profile(request: Request) -> dict:
+    token = request.cookies.get("access_token")
+    
+    # print(token)
+    
+    if not token:
+        raise HTTPException(status_code=401, detail="Access token missing")
+
+    try:
+        # Use Supabase to fetch user data based on the token
+        user_data = supabase.auth.get_user(token)
+        # print(user_data)
+        # print(f"Supabase response for user: {response}") 
+        if user_data.user:
+            # Prepare user_info dictionary with necessary fields
+            user_info = {
+                "first_name": user_data.user.user_metadata["first_name"],  # Ensure these keys match your Supabase schema
+                "last_name": user_data.user.user_metadata["last_name"],
+                "email": user_data.user.user_metadata["email"]
+            }
+
+            # print("User info being returned:", user_info)  
+
+            return user_info
+        else:
+            raise HTTPException(status_code=401, detail="Invalid access token")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Authentication error: {str(e)}")
+    
+# >>>---------------- Inbox -------------------<<<
 
 if __name__ == "__main__":
    import uvicorn

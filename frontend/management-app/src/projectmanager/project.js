@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom';
+import { createClient } from '@supabase/supabase-js';
 import axios from 'axios'
+import api from './api/axiosInstance.js'
 import '../App.css'
 import './project.css'
 import hideIcon from './hideIconDark.png'
@@ -18,6 +21,36 @@ export default function Project() {
     const [pageToLoad, setPageToLoad] = useState(['Home', 'Home', ''])
     const handlePageChange = (page) => {
         setPageToLoad([page, pageToLoad])
+    }
+
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // State to manage loading
+
+    useEffect(() => {
+        const checkUserSession = async () => {
+          try {
+            const response = await api.get('/api/verify_session'); // Goes through axios interceptor to check user session
+    
+            if (response.data.isAuthenticated) {
+              console.log("User is authenticated");
+            } else {
+              console.error("User is not authenticated");
+              navigate('/login');
+            }
+          } catch (err) {
+            console.error("Error checking or refreshing user session:", err);
+            navigate('/login');
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        checkUserSession();
+      }, [navigate]);
+    
+
+    if (loading) {
+        return <div>Loading...</div>; // Show loading indicator
     }
 
     /* We pass the stored frames into sidebar to be rendered */

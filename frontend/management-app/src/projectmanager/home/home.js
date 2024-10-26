@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import './home.css'
 import chatIcon from '../chatIcon.png'
 import chatBlinkIcon from '../chatBlinkIcon3.png'
 
 export default function Home(props) {
+
+    const [userProfile, setUserProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     let chatContent = " Hey John, I went ahead and got the following tasks started for you."
 
@@ -35,11 +40,36 @@ export default function Home(props) {
         return () => clearTimeout(timeout);
     }, [currentIndex, currentDuration]);
 
+    // Get basic user profile data
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+          try {
+            const response = await axios.get('http://127.0.0.1:8000/api/user_profile', { withCredentials: true });
+            setUserProfile(response.data);  // Set user profile data
+          } catch (error) {
+            console.error("Error fetching user profile:", error);
+            setError(error.response ? error.response.data.detail : "An error occurred");
+          } finally {
+            setLoading(false);  // Set loading to false
+          }
+        };
+    
+        fetchUserProfile();
+    }, []); 
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
     return(
         <div className="project-home">
             <div className='header-content'>
                 <div className='greeting'>
-                    <h1>Good morning, John Doe!</h1>
+                    <h1>Good morning, { userProfile.first_name + " " + userProfile.last_name}!</h1>
                     <h2>Ask me anything using the chat bar below</h2>
                 </div>
                 <div className='task-tracker'>

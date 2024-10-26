@@ -1,6 +1,9 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Route, Routes, useLocation } from "react-router-dom"
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom"
+import axios from 'axios';
+import { Navigate } from 'react-router-dom';
+
 import Nav from './components/navbar/nav.js'
 import Landing from './components/landing/landing.js';
 import Pricing from './components/pricing/pricing.js';
@@ -17,7 +20,7 @@ function App() {
   const [currNav, setCurrNav] = useState(<Nav />)
   const location = useLocation();
   /*const { hash, pathname, search } = location;*/
-  const managementRoute = "/login";
+  const managementRoute = "/project";
 
   useEffect(() => {
     if (location.pathname.includes(managementRoute)) {
@@ -30,12 +33,19 @@ function App() {
 
   return (
     <div className="App">
-      {currNav }
+      { currNav }
       <div className='container'>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/login" element={<Project />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/project" element={<Project />} />
+
+          {/* Dynamic route handling for any unknown sub-routes under /project */}
+          <Route path="/project/*" element={<Navigate to="/project" replace />} />
+          {/* Fallback for any other non-existent routes, coudl go to a NotFound page */}
+          <Route path="*" element={/*<NotFound />*/ <Navigate to="/project" replace />} />
         </Routes>
       </div>
     </div>

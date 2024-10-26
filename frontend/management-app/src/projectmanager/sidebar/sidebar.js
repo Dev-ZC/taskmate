@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import axios from 'axios'
 import menuIcon from '../menu.png'
 import homeIcon from './homeIcon.png'
 import calendarIcon from './calendarIcon.png'
@@ -22,6 +23,10 @@ export default function Sidebar(props) {
     const [makeFrameDisplay, setMakeFrameDisplay] = useState(false)
     const [titleHovered, setTitleHovered] = useState(false)
     const makeFrameRef = useRef(null);
+
+    const [userProfile, setUserProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     /* Creating a new frame on submit */
     function handleSubmit(e) {
@@ -68,11 +73,36 @@ export default function Sidebar(props) {
         />
     )
 
+    // Get basic user profile data
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+          try {
+            const response = await axios.get('http://127.0.0.1:8000/api/user_profile', { withCredentials: true });
+            setUserProfile(response.data);  // Set user profile data
+          } catch (error) {
+            console.error("Error fetching user profile:", error);
+            setError(error.response ? error.response.data.detail : "An error occurred");
+          } finally {
+            setLoading(false);  // Set loading to false
+          }
+        };
+    
+        fetchUserProfile();
+    }, []); 
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
     return(
         <div className="project-sidebar-holder">
             <div className="project-sidebar">
                 <button href="/" className='profile-btn'> 
-                    <p>{ profileName } </p>
+                    <p>{ userProfile.first_name + " " + userProfile.last_name} </p>
                     <img src={menuIcon}></img>
                 </button>
                 <div className="section-general">

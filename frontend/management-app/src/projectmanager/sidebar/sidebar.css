@@ -21,8 +21,9 @@
     justify-content: space-between;
     align-items: center;
     transition: linear 100ms;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 200;
+    width: 90%;
 }
 
 .profile-btn:hover {

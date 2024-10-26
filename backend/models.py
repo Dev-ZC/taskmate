@@ -22,3 +22,15 @@ class UserMessageLog(BaseModel):
     
 class AIResponse(BaseModel):
     response: str
+    
+# Login/Sign Up
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+    
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    first_name: str
+    last_name: str
