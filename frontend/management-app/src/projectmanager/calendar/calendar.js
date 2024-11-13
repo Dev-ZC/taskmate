@@ -4,6 +4,7 @@ import './calendar.css'
 import DndCalendar from './dndCalendar'
 import { Calendar, Views, momentLocalizer, DateLocalizer } from 'react-big-calendar'
 import moment from 'moment'
+import EventCalendar from './vkurkoCalendar'
 
 
 export default function CalendarFrame(props) {
@@ -35,9 +36,10 @@ export default function CalendarFrame(props) {
             { JSON.stringify(responseTest) }
 
         </h1>
-        <section className='calendar-holder'>
-            <DndCalendar localizer={myLocalizer}/>
-        </section>
+        <div className=''>
+            { <DndCalendar localizer={myLocalizer} /> }
+            { /*<EventCalendar />*/ }
+        </div>
         </>
     );
 }

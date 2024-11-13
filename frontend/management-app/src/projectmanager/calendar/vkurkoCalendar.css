@@ -1,0 +1,76 @@
+.modern-calendar {
+    width: 90%;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.modern-calendar .ec-header {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modern-calendar .ec-toolbar {
+    padding: 10px;
+}
+
+.modern-calendar .ec-toolbar button {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    color: #333;
+    padding: 6px 12px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+}
+
+.modern-calendar .ec-toolbar button:hover {
+    background-color: #f0f0f0;
+}
+
+.modern-calendar .ec-toolbar .ec-title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.modern-calendar .ec-day-grid {
+    border: none;
+}
+
+.modern-calendar .ec-day-grid-container {
+    border-top: 1px solid #e0e0e0;
+}
+
+.modern-calendar .ec-day-grid-event {
+    border-radius: 3px;
+    padding: 2px 5px;
+}
+
+.modern-calendar .ec-time-grid-event {
+    border-radius: 3px;
+}
+
+.modern-calendar .ec-event-title {
+    font-weight: bold;
+}
+
+.modern-calendar .ec-day-header {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    padding: 10px 0;
+}
+
+.modern-calendar .ec-today {
+    background-color: #e8f5e9;
+}
+
+.modern-calendar .ec-event{
+    cursor: pointer;
+
+}
+
+/* Get rid of later */
+.modern-calendar .ec-event:hover{
+    cursor: pointer;
+    color: blue;
+}

@@ -8,22 +8,24 @@ import './project.css'
 import hideIcon from './hideIconDark.png'
 import sendIcon from './sendIconDark.png'
 import maxIcon from './maxIcon.png'
-import Sidebar from './sidebar/sidebar.js';
-import ProjectNav from './projectNav/projectNav.js';
+import Sidebar from './sidebar/sidebar.js'
+import ProjectNav from './projectNav/projectNav.js'
 import chatIcon from './chatIcon.png'
 import Home from './home/home.js'
 import Calendar from './calendar/calendar.js'
 import Automation from './automation/automation.js'
 import Inbox from './inbox/inbox.js'
 import Network from './network/network.js'
+import Document from './document/document.js'
 
 export default function Project() {
     const [pageToLoad, setPageToLoad] = useState(['Home', 'Home', ''])
-    const handlePageChange = (page) => {
-        setPageToLoad([page, pageToLoad])
-    }
+    const handlePageChange = (frameType, frameName, fileId) => {
+        setPageToLoad([frameType, frameName, fileId]);
+    };
+    
 
-    const navigate = useNavigate();
+    /*const navigate = useNavigate();
     const [loading, setLoading] = useState(true); // State to manage loading
 
     useEffect(() => {
@@ -51,7 +53,8 @@ export default function Project() {
 
     if (loading) {
         return <div>Loading...</div>; // Show loading indicator
-    }
+    }*/
+
 
     /* We pass the stored frames into sidebar to be rendered */
     const storedFrames = [
@@ -60,18 +63,21 @@ export default function Project() {
             id: 0,
             frameName: 'notes',
             frameType: 'Doc',
+            fileId: 1,
         },
       
         {
             id: 1,
             frameName: 'random',
             frameType: 'Doc',
+            fileId: 1,
         },
 
         {
             id: 2,
             frameName: 'other',
             frameType: 'Doc',
+            fileId: 1,
         }
       
       ]
@@ -86,6 +92,9 @@ export default function Project() {
 }
 
 function RenderFrame(props) {
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true); // State to manage loading
+
     /* Page to load is the frameType value 
     
     {props.pageToLoad === 'Calendar' && <Calendar />} 
@@ -99,9 +108,10 @@ function RenderFrame(props) {
     /* These values are loaded and changed from the Frame component definition in Sidebar */
     const frameType = props.pageToLoad[0];
     const frameName = props.pageToLoad[1];
-    const frameId = props.pageToLoad[2];
 
-    console.log(frameType, frameName)
+    const fileId = props.pageToLoad[2];
+
+    console.log(frameType, frameName, fileId)
 
     return(
         /* Frametype decides what component to render */
@@ -115,6 +125,7 @@ function RenderFrame(props) {
             {frameType === 'Calendar' && <Calendar pageName={frameName} />} 
             {frameType === 'Network' && <Network pageName={frameName} />} 
             {frameType === 'Automation' && <Automation pageName={frameName} />} 
+            {frameType === 'Doc' && <Document fileId = {fileId} pageType={frameType} pageName={frameName} />}
             <ChatBar />
         </div>
     );

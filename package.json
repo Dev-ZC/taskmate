@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@event-calendar/core": "^3.6.2",
+    "@event-calendar/time-grid": "^3.6.2",
     "@supabase/supabase-js": "^2.45.6",
     "axios": "^1.7.2"
   }

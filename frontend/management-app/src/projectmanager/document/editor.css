@@ -1,0 +1,48 @@
+/* Document Editor Stylings */
+
+.editorprovider-container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.editorprovider-holder {
+    width: 90%;
+}
+
+/* Editor Provider Stylings*/
+.ProseMirror {
+    /* Define the size and padding of the text area */
+    min-height: 40rem;
+    padding: 5px 16px;
+    box-sizing: border-box;
+    
+    /* Set the background color */
+    background-color: #f9f9f9;
+    
+    /* Add a border and some border-radius for rounded corners */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    
+    /* Set the font settings */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #333;
+    
+    /* Allow the text area to expand */
+    overflow-y: auto;
+}
+
+.ProseMirror:focus {
+    outline: none;
+    border-color: #ccc; /* Light border color */
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+.ProseMirror p.is-empty::before {
+    color: #999; /* Ensure the placeholder is visible */
+    content: attr(data-placeholder); /* Placeholder text */
+    float: left;
+    height: 0;
+    pointer-events: none;
+}

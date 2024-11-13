@@ -19,7 +19,8 @@ from mistralai.client import MistralClient
 
 supabase_url = os.getenv("SUPABASE_URL")
 supabase_anon_key = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(supabase_url, supabase_anon_key)
+supabase_service_role_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+supabase: Client = create_client(supabase_url, supabase_service_role_key)
 
 load_dotenv()
 
@@ -30,7 +31,9 @@ db_manager = DB_Manager()
 API_KEY = os.getenv("API_KEY")
 MODEL = os.getenv("MODEL")
 simulate_response = True
-is_secure = False
+token_secure = True
+access_token_expiration = 3600
+refresh_token_expiration = 86400 * 15 # 15 day window = (day) * (num days)
 
 messages_ex = [
     Message(message='Hello!', sender_id=1, sender_type='user'),
@@ -42,7 +45,7 @@ messages = []
 # Allows cross origin requests with react and fast api
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Specify your React app's URL
+    allow_origins=["http://localhost:3000"],  # Include the frontend URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -155,8 +158,8 @@ async def signup(
         response.delete_cookie("refresh_token")
 
         # Set new access and refresh tokens
-        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=True, expires=3600, samesite="None")
-        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=token_secure, expires=access_token_expiration, samesite="None")
+        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=token_secure, expires=refresh_token_expiration_token_expiration, samesite="None")
 
     return {"message": "User created successfully"}
 
@@ -175,20 +178,16 @@ async def login(response: Response, email: str = Body(...), password: str = Body
 
     session = login_response.session
     if session:
-        # Clear existing cookies
-        response.delete_cookie("access_token")
-        response.delete_cookie("refresh_token")
 
         # Set new access and refresh tokens
-        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=True, expires=3600, samesite="None")
-        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+        response.set_cookie(key="access_token", value=session.access_token, httponly=True, secure=token_secure, expires=access_token_expiration, samesite="None")
+        response.set_cookie(key="refresh_token", value=session.refresh_token, httponly=True, secure=token_secure, expires=refresh_token_expiration, samesite="None")
 
     return {"message": "Login successful"}
 
 @app.post("/api/refresh")
 async def refresh_token(response: Response, request: Request):
     refresh_token = request.cookies.get("refresh_token")
-    print(refresh_token)
     if not refresh_token:
         raise HTTPException(status_code=402, detail="Refresh token missing")
 
@@ -208,42 +207,103 @@ async def refresh_token(response: Response, request: Request):
         response.delete_cookie("refresh_token")
 
         # Set a new access token cookie
-        response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=True, expires=3600, samesite="None")
-        response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True, secure=True, expires=86400, samesite="None")
+        response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=token_secure, expires=access_token_expiration, samesite="None")
+        response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True, secure=token_secure, expires=refresh_token_expiration, samesite="None")
 
-        return {"message": "Access token refreshed successfully"}
+        return {"message": "Access token refreshed successfully", "accessToken": new_access_token, "refreshToken": new_refresh_token}
 
     raise HTTPException(status_code=500, detail="Unable to refresh access token")
-
-        
+    
 @app.get("/api/verify_session")
-async def verify_session(request: Request):
-    # Updated method "async def read_cookie(my_cookie: Annotated[str | None, Cookie()] = None):"
+async def verify_session(request: Request, response: Response):  # Include response for cookie handling
+    # Get tokens from cookies
     token = request.cookies.get("access_token")
-    # print(f"Received token: {token}")  # Log the token
+    refresh_token = request.cookies.get("refresh_token")
 
-    if not token:
-        raise HTTPException(status_code=401, detail="Access token missing")
+    # If no access token, attempt to refresh it using refresh token
+    if not token and refresh_token:
+        try:
+            print("entered try")
+            refresh_response = supabase.auth.refresh_session(refresh_token)
+            
+            if not refresh_response.session:
+                raise HTTPException(status_code=403, detail="Invalid refresh token or session expired")
+            
+            # Get the new tokens
+            new_access_token = refresh_response.session.access_token
+            new_refresh_token = refresh_response.session.refresh_token
+            
+            # Clear access and refresh tokens from cookies
+            response.delete_cookie("access_token")
+            response.delete_cookie("refresh_token")
 
+            # Set the new tokens in cookies
+            response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=token_secure, expires=access_token_expiration, samesite="None")
+            response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True, secure=token_secure, expires=refresh_token_expiration, samesite="None")
+            token = new_access_token  # Update token for further processing
+            
+        except Exception as e:
+            import traceback
+            print(f"Exception: {e}")
+            print(traceback.format_exc())  # Print the full stack trace
+            print("threw exception")
+            return {"isAuthenticated": False, "error": f"Failed to refresh token: {str(e)}"}
+
+    # Validate the access token (whether newly set or original)
+    if token:
+        try:
+            response = supabase.auth.get_user(token)
+            if response.user:
+                return {"isAuthenticated": True, "accessToken": token}
+            else:
+                return {"isAuthenticated": False, "accessToken": None}
+        except Exception as e:
+            return {"isAuthenticated": False, "error": str(e)}
+
+    # If no access token and refresh failed
+    raise HTTPException(status_code=401, detail="Access token missing and refresh failed")
+    
+    
+@app.post("api/signout")
+async def signout(request: Request):
+    token = request.cookies.get("access_token")
+    
+    if not token or token == "":
+        try:
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+        except Exception as e: 
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
+    
     try:
-        response = supabase.auth.get_user(token)
-        # print(f"Supabase response: {response}")  # Log the response
-        if response.user:
-            return {"isAuthenticated": True}
-        else:
-            return {"isAuthenticated": False}
+        login_response = supabase.auth.sign_out()
+        
+        # Clear existing cookies
+        response.delete_cookie("access_token")
+        response.delete_cookie("refresh_token")
+        
     except Exception as e:
-        return {"isAuthenticated": False, "error": str(e)}
+        raise HTTPException(status_code=501, detail=f"Unable to sign out user: {str(e)}")
+
+    if "error" in login_response:
+        raise HTTPException(status_code=400, detail=login_response["error"]["message"])
+
+    return {"message": "Sign out successful"}
+    # Clear access and refresh tokens from cookies
+    
 
 # Getting user data
 @app.get("/api/user_profile")
-async def user_profile(request: Request) -> dict:
+async def user_profile(request: Request, response: Response) -> dict:
     token = request.cookies.get("access_token")
     
-    # print(token)
-    
-    if not token:
-        raise HTTPException(status_code=401, detail="Access token missing")
+    if not token or token == "":
+        try:
+            # Must pass request and response parameters!!!
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+        except Exception as e: 
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
 
     try:
         # Use Supabase to fetch user data based on the token
@@ -265,6 +325,150 @@ async def user_profile(request: Request) -> dict:
             raise HTTPException(status_code=401, detail="Invalid access token")
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"Authentication error: {str(e)}")
+    
+# >>>---------------- Documents -------------------<<<
+
+# Fetches the id and names of all users stored documents
+@app.get("/api/fetch_user_documents")
+async def fetch_user_documents(request: Request, response: Response): 
+    token = request.cookies.get("access_token")
+    
+    if not token or token == "":
+        try:
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+        except Exception as e: 
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
+    
+    try:
+        # Use Supabase to fetch user data based on the token
+        user_data = supabase.auth.get_user(token)
+
+        if user_data.user:
+            user_id = user_data.user.id
+            
+            response = supabase.table("documents").select("doc_id, title").eq("user_id", user_id).execute()
+            
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=402, detail=f"Unable to access user data: {str(e)}")
+    
+@app.get('/api/fetch_document_content')
+async def fetch_document_content(request: Request, response: Response, doc_id):
+    token = request.cookies.get("access_token")
+    
+    if not token or token == "":
+        try:
+            # Returns access token after verifying
+            print("before!!!")
+            #token = await verify_session(request).accessToken
+            
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+            
+            print("Newly created token: " + token)
+        except Exception as e: 
+            #print({str(e)})
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
+    
+    try:
+        user_data = supabase.auth.get_user(token)
+        
+        if user_data.user:
+            user_id = user_data.user.id
+            
+            response = supabase.table("documents").select("content").eq("doc_id", doc_id).eq("user_id", user_id).execute()
+            
+            if response.data:
+                # Assuming response.data is a list and you want the content from the first item
+                document_content = response.data[0].get("content") if response.data else None
+                return {"document_id": doc_id, "content": document_content}
+            else:
+                raise HTTPException(status_code=405, detail="Document not found")
+            
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=402, detail=f"Unable to access user document: {str(e)}")
+    
+# class Document(BaseModel):
+#     title: Optional[str] = None
+#     content: Optional[str] = None
+#     doc_id: Optional[int] = None
+#     user_id: Optional[str] = None
+    
+@app.post('/api/create_new_document')
+async def create_new_document(request: Request, response: Response, title: Document):
+    token = request.cookies.get("access_token")
+    
+    if not token or token == "":
+        try:
+            
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+            
+        except Exception as e: 
+            print({str(e)})
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
+    
+    try:
+        user_data = supabase.auth.get_user(token)
+        
+        if user_data.user:
+            user_id = user_data.user.id
+            
+            response = supabase.table("documents").insert({"title": title.title, "user_id": user_id }).execute()
+            
+            #doc_id = response.data.doc_id # See if this works properly
+            doc_id = response.data[0]['doc_id']
+            
+            return {"doc_id": doc_id}
+            
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=403, detail=f"Unable to create new document: {str(e)}")
+    
+@app.post('/api/save_document_content')
+async def save_document_content(request: Request, response: Response, doc: Document):
+    print("entered")
+    
+    token = request.cookies.get("access_token")
+    
+    if not token:
+        try:
+            verification_result = await verify_session(request, response)
+            token = verification_result['accessToken']
+        except Exception as e:
+            raise HTTPException(status_code=403, detail=f"Unable to access or create new session: {str(e)}")
+    
+    try:
+        print("got to try")
+        # Verify user with the token
+        user_data = supabase.auth.get_user(token)
+        
+        if user_data.user:
+            user_id = user_data.user.id
+            
+            # Update the document content in the database
+            # print("got to supabase call")
+            # print("content--"+doc.content)
+            update_response = supabase.table("documents").update({
+                "content": doc.content
+            }).eq("doc_id", doc.doc_id).eq("user_id", user_id).execute()
+            
+            # print(json.dumps(update_response.data))
+            
+            return {"isSaved": True, "docId": doc.doc_id}
+        else:
+            raise HTTPException(status_code=403, detail="Invalid user token")
+    
+    except Exception as e:
+        import traceback
+        print(f"Exception: {e}")
+        print(traceback.format_exc())  # Print the full stack trace
+        print("threw exception")
+        raise HTTPException(status_code=500, detail=f"Unable to save document: {str(e)}")
+    
     
 # >>>---------------- Inbox -------------------<<<
 

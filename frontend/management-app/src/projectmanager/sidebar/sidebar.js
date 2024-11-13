@@ -18,7 +18,9 @@ export default function Sidebar(props) {
     /*const homeFrame = {id: 0, frameName: 'Home', componentToRender={<Home />}}*/
 
     const [newFrame, setNewFrame] = useState("") /* Stores new frames name */
-    const [frames, setFrames] = useState(props.storedFrames) /* Stores the set of frames to be rendered */
+    const [frames, setFrames] = useState([]) /* Stores the set of frames to be rendered 
+        Populate using a db fetch all documents call
+    */
 
     const [makeFrameDisplay, setMakeFrameDisplay] = useState(false)
     const [titleHovered, setTitleHovered] = useState(false)
@@ -28,22 +30,79 @@ export default function Sidebar(props) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Populates frames with a doc id and name
+    // Fetch user documents when the component loads
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/fetch_user_documents', { withCredentials: true });
+                
+                // Assuming the API returns an object with a 'data' property containing the list of documents
+                if (response.data && response.data) {
+                    const documents = response.data.data.map(doc => ({
+                        id: doc.doc_id, // Use doc_id from the API response
+                        frameName: doc.title, // Use title from the API response
+                        fileId: doc.doc_id // Use doc_id as fileId
+                    }));
+
+                    // Update the frames state with the fetched documents
+                    setFrames(documents);
+                }
+
+            } catch (error) {
+                console.error('Error fetching documents:', error);
+            }
+        };
+
+        fetchDocuments();
+    }, []); // Empty dependency array to run once on mount
+
     /* Creating a new frame on submit */
-    function handleSubmit(e) {
-        e.preventDefault()
+    async function handleSubmit(e) {
+        e.preventDefault();
+    
+        // Create the new frame
+        const createNewDocument = async (name) => {
+            try {
+                // Make the Axios POST request
+                const response = await axios.post('http://127.0.0.1:8000/api/create_new_document', {
+                    title: name  // Directly sending the title in the request body
+                }, { withCredentials: true });
+                // Handle the response
+                let doc_id = response.data.doc_id;
+                console.log("Document created with ID:", doc_id);
+                return doc_id;  // Return the document ID
+            } catch (error) {
+                // Handle any errors
+                if (error.response) {
+                    console.error("Error creating document:", error.response.data.detail);
+                } else {
+                    console.error("Error creating document:", error.message);
+                }
+                throw error;  // Re-throw the error for further handling if needed
+            }
+        };
+    
+        try {
+            // Await the result of createNewDocument
+            console.log(newFrame)
+            const id_holder = await createNewDocument(newFrame);
+    
+            // Update frames state
+            const newFrameData = { id: crypto.randomUUID(), frameName: newFrame, frameType: "Doc", fileId: id_holder };
+            setFrames(currentFrames => [
+                ...currentFrames,
+                newFrameData,
+            ]);
 
-        setFrames(currentframes => {
-            return [
-
-                /* Later on add the functionality to store new frames in database -----? */
-
-                ...currentframes, 
-                { id: crypto.randomUUID(), frameName: newFrame, frameType: "Doc" },
-            ]
-        })
-
-        /* Make the text input hidden after input */
-        handleNewFrame()
+            // Call the handleChange (or props.onPageSelect) to update the render frame
+            props.onPageSelect(newFrameData.frameType, newFrameData.frameName, newFrameData.fileId);
+        } catch (err) {
+            console.error('Failed to create document:', err);
+        }
+    
+        setNewFrame('');  // Clear the input
+        handleNewFrame(); // Call your additional function to handle frame input visibility
     }
 
     function handleNewFrame(){
@@ -53,6 +112,21 @@ export default function Sidebar(props) {
             makeFrameRef.current.focus();
         }
         */
+    }
+
+    // Focus input when form becomes visible
+    useEffect(() => {
+        if (makeFrameDisplay && makeFrameRef.current) {
+            makeFrameRef.current.focus();
+        }
+    }, [makeFrameDisplay]); // Watch for changes in makeFrameDisplay
+
+    function handleNewFrameTrue(){
+        setMakeFrameDisplay(true)
+    }
+
+    function handleNewFrameFalse(){
+        setMakeFrameDisplay(false)
     }
 
     const handleTitleHover = () => {
@@ -66,10 +140,11 @@ export default function Sidebar(props) {
     /* All data passed into each frame */
     const frameItems = frames.map(frame =>
         <Frame 
-            key={frame.id} 
+            key={crypto.randomUUID()} 
             frameName={frame.frameName}
-            frameType={frame.frameType}
+            frameType={"Doc"}
             onPageSelect={props.onPageSelect}
+            fileId={frame.fileId}
         />
     )
 
@@ -110,12 +185,14 @@ export default function Sidebar(props) {
                     <Frame frameName="Home" frameType="Home" onPageSelect={props.onPageSelect} />
                     <Frame frameName="Inbox" frameType="Inbox" onPageSelect={props.onPageSelect} />
                     <Frame frameName="Calendar" frameType="Calendar" onPageSelect={props.onPageSelect} />
-                    <Frame frameName="Network" frameType="Network" onPageSelect={props.onPageSelect} />
-                    <Frame frameName="Automation" frameType="Automation" onPageSelect={props.onPageSelect} />
+
+                    {/* To be completed in future functionality */}
+                    {/*<Frame frameName="Network" frameType="Network" onPageSelect={props.onPageSelect} />*/}
+                    {/*<Frame frameName="Automation" frameType="Automation" onPageSelect={props.onPageSelect} />*/}
 
                     <span className='sidebar-title-holder' onMouseEnter={ handleTitleHover } onMouseLeave={ handleTitleLeave }>
                         <p className='sidebar-title'>Pages</p>
-                        <img src={plusIcon} onClick={ handleNewFrame } className={`${titleHovered ? 'makePlusVisible':'makePlusHidden'}`}></img>
+                        <img src={plusIcon} onClick={ handleNewFrameTrue } className={`${titleHovered ? 'makePlusVisible':'makePlusHidden'}`}></img>
                     </span>
                     <form onSubmit= { handleSubmit } className={`makeFrame ${makeFrameDisplay ? 'makeFrameVisible':'makeFrameHidden'}`}>
                         <div className='form-row'>
@@ -123,7 +200,7 @@ export default function Sidebar(props) {
                                 ref={makeFrameRef}
                                 value={newFrame}
                                 onChange={e => setNewFrame(e.target.value)}
-                                onBlur={ handleNewFrame }
+                                onBlur={ handleNewFrameFalse }
                                 type="text"
                                 id="item"
                             />
@@ -147,7 +224,7 @@ function Frame(props){
     /* Data passed back to render frame when button is clicked */
     const handleChange = () => {
         /* We pass back both frametype and framename to be used by RenderFrame */
-        props.onPageSelect(props.frameType, props.frameName, props.id);
+        props.onPageSelect(props.frameType, props.frameName, props.fileId);
     };
 
     let src = ''

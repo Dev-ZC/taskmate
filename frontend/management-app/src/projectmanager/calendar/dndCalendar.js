@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import events from './calendarEvents'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 
 //const localizer = momentLocalizer(moment) // Instantiates a localizer
 const DragAndDropCalendar = withDragAndDrop(Calendar) // Creates a drag and rop calendar
@@ -41,6 +42,18 @@ export default function DndCalendar({ localizer }) {
         [setMyEvents]
     )
 
+    const handleSelect = ({ start, end }) => {
+        const title = window.prompt('New Event name');
+        if (title) {
+          const newEvent = {
+            start,
+            end,
+            title,
+          };
+          //onEventAdded(newEvent);
+        }
+      };
+
     const defaultDate = useMemo(() => new Date(2015, 3, 12), [])
 
     return(
@@ -55,6 +68,8 @@ export default function DndCalendar({ localizer }) {
                 onEventResize={resizeEvent}
                 resizable
                 popup
+                selectable={true}
+                onSelectSlot={handleSelect}
                 />
             </div>
         </Fragment>

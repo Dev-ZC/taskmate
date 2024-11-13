@@ -8,12 +8,15 @@
     color: black;
 }
 
-.calendar-holder {
-    height: 600px;
+.height600 {
+    height: 800px;
+    background-color: black;
 }
 
-.height600 {
-    height: 100%;
+.calendar-holder {
+    max-height: 38rem;
     width: 100%;
-    background-color: bisque;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
 }
